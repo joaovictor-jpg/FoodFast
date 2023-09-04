@@ -128,6 +128,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/tv_categories">
 
                 <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rec_view_categories"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scrollbars="none" />
