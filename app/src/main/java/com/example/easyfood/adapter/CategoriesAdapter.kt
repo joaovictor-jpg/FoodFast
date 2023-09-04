@@ -11,6 +11,7 @@ import com.example.easyfood.pojo.Category
 class CategoriesAdapter() : Adapter<CategoriesAdapter.CategoryViewHolder>() {
 
     private var categoriesList = ArrayList<Category>()
+    var onItemClick : ((Category) -> Unit)? = null
 
     fun setCategoryList(categoriList: List<Category>) {
         this.categoriesList = categoriList as ArrayList<Category>
@@ -36,5 +37,9 @@ class CategoriesAdapter() : Adapter<CategoriesAdapter.CategoryViewHolder>() {
         Glide.with(holder.itemView).load(categoriesList[position].strCategoryThumb)
             .into(holder.binding.imgCategory)
         holder.binding.tvCategoryName.setText(categoriesList[position].strCategory)
+
+        holder.itemView.setOnClickListener {
+            onItemClick!!.invoke(categoriesList[position])
+        }
     }
 }
