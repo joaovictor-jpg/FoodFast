@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.easyfood.db.MealDataBase
 import com.example.easyfood.pojo.Category
 import com.example.easyfood.pojo.CategoryList
@@ -12,6 +13,7 @@ import com.example.easyfood.pojo.MealsByCategory
 import com.example.easyfood.pojo.Meal
 import com.example.easyfood.pojo.MealList
 import com.example.easyfood.retrofit.RetrofitInstance
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -74,6 +76,18 @@ class HomeViewModel(
             }
 
         })
+    }
+
+    fun insert(meal: Meal) {
+        viewModelScope.launch {
+            mealDataBase.mealDao().insertFavorite(meal)
+        }
+    }
+
+    fun delete(meal: Meal) {
+        viewModelScope.launch {
+            mealDataBase.mealDao().deleteMeal(meal)
+        }
     }
 
     fun observeRandomMealLivedata(): LiveData<Meal> {
