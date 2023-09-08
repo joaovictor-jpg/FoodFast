@@ -17,6 +17,7 @@ import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.Objects
 
 class HomeViewModel(
     private val mealDataBase: MealDataBase
@@ -26,6 +27,7 @@ class HomeViewModel(
     private var popularItemsLiveData = MutableLiveData<List<MealsByCategory>>()
     private var categoryLiveData = MutableLiveData<List<Category>>()
     private var favoritesMealsLiveData = mealDataBase.mealDao().getAllSavedMeals()
+    private var bottomSheetMealLiveData = MutableLiveData<Meal>()
 
     fun gerRandomMeal() {
         RetrofitInstance.api.getRandomMeal().enqueue(object : Callback<MealList> {
@@ -84,6 +86,22 @@ class HomeViewModel(
         }
     }
 
+    fun getMealById(id: String) {
+        RetrofitInstance.api.getMealDatails(id).enqueue(object : Callback<MealList>{
+            override fun onResponse(call: Call<MealList>, response: Response<MealList>) {
+                val meal = response.body()?.meals?.first()
+                meal?.let { meal ->
+                    bottomSheetMealLiveData.postValue(meal)
+                }
+            }
+
+            override fun onFailure(call: Call<MealList>, t: Throwable) {
+                TODO("Not yet implemented")
+            }
+
+        })
+    }
+
     fun delete(meal: Meal) {
         viewModelScope.launch {
             mealDataBase.mealDao().deleteMeal(meal)
@@ -105,4 +123,6 @@ class HomeViewModel(
     fun observeFavoritesMealsLiveData(): LiveData<List<Meal>> {
         return favoritesMealsLiveData
     }
+
+    fun observeBottomSheetMeal() : LiveData<Meal> = bottomSheetMealLiveData
 }
