@@ -1,7 +1,6 @@
 package com.example.easyfood.fragments
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +10,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.easyfood.activites.MainActivity
-import com.example.easyfood.adapter.FavoritesMealsAdapter
+import com.example.easyfood.adapter.MealsAdapter
 import com.example.easyfood.databinding.FragmentFavoritesBinding
 import com.example.easyfood.viewModel.HomeViewModel
 import com.google.android.material.snackbar.Snackbar
@@ -20,7 +19,7 @@ class favoritesFragment : Fragment() {
 
     private lateinit var binding: FragmentFavoritesBinding
     private lateinit var viewModel: HomeViewModel
-    private lateinit var favoritesMealsAdapter: FavoritesMealsAdapter
+    private lateinit var mealsAdapter: MealsAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,7 +51,7 @@ class favoritesFragment : Fragment() {
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.adapterPosition
-                val deleteMeal = favoritesMealsAdapter.differ.currentList[position]
+                val deleteMeal = mealsAdapter.differ.currentList[position]
                 viewModel.delete(deleteMeal)
                 Snackbar.make(requireView(), "Meal Deleted", Snackbar.LENGTH_LONG).setAction(
                     "Undo",
@@ -67,16 +66,16 @@ class favoritesFragment : Fragment() {
     }
 
     private fun prepareRecycleView() {
-        favoritesMealsAdapter = FavoritesMealsAdapter()
+        mealsAdapter = MealsAdapter()
         binding.rvFavorites.apply {
             layoutManager = GridLayoutManager(context, 2, GridLayoutManager.VERTICAL, false)
-            adapter = favoritesMealsAdapter
+            adapter = mealsAdapter
         }
     }
 
     private fun observeFavorites() {
         viewModel.observeFavoritesMealsLiveData().observe(viewLifecycleOwner, Observer { meals ->
-            favoritesMealsAdapter.differ.submitList(meals)
+            mealsAdapter.differ.submitList(meals)
         })
     }
 }
