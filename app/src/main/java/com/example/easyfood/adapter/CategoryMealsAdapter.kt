@@ -12,6 +12,7 @@ import com.example.easyfood.pojo.MealsByCategory
 class CategoryMealsAdapter : Adapter<CategoryMealsAdapter.CategoryMealsViewModel>() {
 
     private var mealsList = ArrayList<MealsByCategory>()
+    lateinit var onItemClick: ((MealsByCategory) -> Unit)
 
     fun setMealsList(mealsList: List<MealsByCategory>) {
         this.mealsList = mealsList as ArrayList<MealsByCategory>
@@ -33,8 +34,12 @@ class CategoryMealsAdapter : Adapter<CategoryMealsAdapter.CategoryMealsViewModel
     }
 
     override fun onBindViewHolder(holder: CategoryMealsViewModel, position: Int) {
-        Glide.with(holder.itemView).load(mealsList[position].strMealThumb).into(holder.binding.imgMeal)
+        Glide.with(holder.itemView).load(mealsList[position].strMealThumb)
+            .into(holder.binding.imgMeal)
         holder.binding.tvMealName.setText(mealsList[position].strMeal)
+        holder.itemView.setOnClickListener {
+            onItemClick.invoke(mealsList[position])
+        }
     }
 
 
