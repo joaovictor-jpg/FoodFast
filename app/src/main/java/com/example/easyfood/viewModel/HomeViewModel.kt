@@ -17,7 +17,6 @@ import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.util.Objects
 
 class HomeViewModel(
     private val mealDataBase: MealDataBase
@@ -30,12 +29,20 @@ class HomeViewModel(
     private var bottomSheetMealLiveData = MutableLiveData<Meal>()
     private var searchMealsLiveData = MutableLiveData<List<Meal>>()
 
-    fun gerRandomMeal() {
+
+    private var saveSateRandomMeal: Meal? = null
+
+    fun getRandomMeal() {
+        saveSateRandomMeal?.let {randomMeal ->
+            randomMealLiveData.postValue(randomMeal)
+            return
+        }
         RetrofitInstance.api.getRandomMeal().enqueue(object : Callback<MealList> {
             override fun onResponse(call: Call<MealList>, response: Response<MealList>) {
                 if (response.body() != null) {
                     val randomMeal: Meal = response.body()!!.meals[0]
                     randomMealLiveData.value = randomMeal
+                    saveSateRandomMeal = randomMeal
                 } else {
                     return
                 }
@@ -88,7 +95,7 @@ class HomeViewModel(
     }
 
     fun getMealById(id: String) {
-        RetrofitInstance.api.getMealDatails(id).enqueue(object : Callback<MealList>{
+        RetrofitInstance.api.getMealDatails(id).enqueue(object : Callback<MealList> {
             override fun onResponse(call: Call<MealList>, response: Response<MealList>) {
                 val meal = response.body()?.meals?.first()
                 meal?.let { meal ->
@@ -109,10 +116,10 @@ class HomeViewModel(
         }
     }
 
-    fun observerSearchedMealsLiveData() : LiveData<List<Meal>> = searchMealsLiveData
+    fun observerSearchedMealsLiveData(): LiveData<List<Meal>> = searchMealsLiveData
 
-    fun searchMeals(searchQuery:String) = RetrofitInstance.api.search(searchQuery).enqueue(
-        object : Callback<MealList>{
+    fun searchMeals(searchQuery: String) = RetrofitInstance.api.search(searchQuery).enqueue(
+        object : Callback<MealList> {
             override fun onResponse(call: Call<MealList>, response: Response<MealList>) {
                 val mealList = response.body()?.meals
                 mealList?.let {
@@ -143,5 +150,5 @@ class HomeViewModel(
         return favoritesMealsLiveData
     }
 
-    fun observeBottomSheetMeal() : LiveData<Meal> = bottomSheetMealLiveData
+    fun observeBottomSheetMeal(): LiveData<Meal> = bottomSheetMealLiveData
 }
