@@ -11,7 +11,11 @@ import com.example.easyfood.pojo.Meal
 
 class MealsAdapter :
     RecyclerView.Adapter<MealsAdapter.FavoritesMealsAdapterViewHolder>() {
-    inner class FavoritesMealsAdapterViewHolder(val binding: MealItemBinding) : RecyclerView.ViewHolder(binding.root)
+
+    var onLongItemClick: ((Meal) -> Unit)? = null
+
+    inner class FavoritesMealsAdapterViewHolder(val binding: MealItemBinding) :
+        RecyclerView.ViewHolder(binding.root)
 
     private val diffUtil = object : DiffUtil.ItemCallback<Meal>() {
         override fun areItemsTheSame(oldItem: Meal, newItem: Meal): Boolean {
@@ -31,7 +35,7 @@ class MealsAdapter :
     ): FavoritesMealsAdapterViewHolder {
         return FavoritesMealsAdapterViewHolder(
             MealItemBinding.inflate(
-                LayoutInflater.from(parent.context), parent , false
+                LayoutInflater.from(parent.context), parent, false
             )
         )
     }
@@ -44,6 +48,10 @@ class MealsAdapter :
         val meal = differ.currentList[position]
         Glide.with(holder.itemView).load(meal.strMealThumb).into(holder.binding.imgMeal)
         holder.binding.tvMealName.setText(meal.strMeal)
+        holder.itemView.setOnLongClickListener {meal ->
+            onLongItemClick?.invoke(differ.currentList[position])
+            true
+        }
     }
 
 
