@@ -32,6 +32,7 @@ class CategoryMealsActivity : AppCompatActivity() {
             binding.tvCategoryCount.setText("${mealsList.size.toString()}")
             categoryMealsAdapter.setMealsList(mealsList)
         })
+
     }
 
     private fun prepareRecyclerView() {
