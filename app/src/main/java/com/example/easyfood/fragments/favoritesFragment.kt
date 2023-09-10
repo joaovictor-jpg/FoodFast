@@ -1,5 +1,6 @@
 package com.example.easyfood.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -10,6 +11,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.easyfood.activites.MainActivity
+import com.example.easyfood.activites.MealActivity
 import com.example.easyfood.adapter.MealsAdapter
 import com.example.easyfood.databinding.FragmentFavoritesBinding
 import com.example.easyfood.fragments.bottomsheet.MealBottomSheetFragment
@@ -64,13 +66,17 @@ class favoritesFragment : Fragment() {
 
         }
         ItemTouchHelper(itemTouchHelper).attachToRecyclerView(binding.rvFavorites)
-        onFavoritesItemLongClick()
+
+        onClickItemAdapter()
     }
 
-    private fun onFavoritesItemLongClick() {
-        mealsAdapter.onLongItemClick = {meal ->
-            val mealBottomSheetFragment = MealBottomSheetFragment.newInstance(meal.idMeal)
-            mealBottomSheetFragment.show(childFragmentManager, "Favorites Meal")
+    private fun onClickItemAdapter() {
+        mealsAdapter.onClickItem = {meal ->
+            val intent = Intent(activity, MealActivity::class.java)
+            intent.putExtra(HomeFragment.MEAL_ID, meal.idMeal)
+            intent.putExtra(HomeFragment.MEAL_NAME, meal.strMeal)
+            intent.putExtra(HomeFragment.MEAL_THUMB, meal.strMealThumb)
+            startActivity(intent)
         }
     }
 

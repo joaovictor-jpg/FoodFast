@@ -12,7 +12,7 @@ import com.example.easyfood.pojo.Meal
 class MealsAdapter :
     RecyclerView.Adapter<MealsAdapter.FavoritesMealsAdapterViewHolder>() {
 
-    var onLongItemClick: ((Meal) -> Unit)? = null
+    var onClickItem: ((Meal) -> Unit)? = null
 
     inner class FavoritesMealsAdapterViewHolder(val binding: MealItemBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -48,9 +48,9 @@ class MealsAdapter :
         val meal = differ.currentList[position]
         Glide.with(holder.itemView).load(meal.strMealThumb).into(holder.binding.imgMeal)
         holder.binding.tvMealName.setText(meal.strMeal)
-        holder.itemView.setOnLongClickListener {meal ->
-            onLongItemClick?.invoke(differ.currentList[position])
-            true
+
+        holder.itemView.setOnClickListener {
+            onClickItem?.invoke(meal)
         }
     }
 
